@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Пользователи{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4">Пользователи сервиса</h1>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Email</th>
+                    <th>Имя</th>
+                    <th>Зарегистрирован</th>
+                    <th>Статус</th>
+                    {% if perms.users.can_block_user %}<th class="text-end">Действие</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in users_list %}
+                    <tr>
+                        <td>{{ item.email }}</td>
+                        <td>{{ item.get_full_name|default:"—" }}</td>
+                        <td>{{ item.date_joined|date:"d.m.Y" }}</td>
+                        <td>
+                            {% if item.token %}
+                                <span class="badge text-bg-secondary">Email не подтверждён</span>
+                            {% elif item.is_active %}
+                                <span class="badge text-bg-success">Активен</span>
+                            {% else %}
+                                <span class="badge text-bg-danger">Заблокирован</span>
+                            {% endif %}
+                            {% if item.is_superuser %}<span class="badge text-bg-dark">Админ</span>{% endif %}
+                        </td>
+                        {% if perms.users.can_block_user %}
+                            <td class="text-end">
+                                {% if item != user and not item.is_superuser and not item.token %}
+                                    <form method="post" action="{% url 'users:user_block_toggle' item.pk %}">
+                                        {% csrf_token %}
+                                        {% if item.is_active %}
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">Заблокировать</button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-outline-success btn-sm">Разблокировать</button>
+                                        {% endif %}
+                                    </form>
+                                {% endif %}
+                            </td>
+                        {% endif %}
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="5" class="text-muted">Пользователей пока нет.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% include "includes/pagination.html" %}
+{% endblock %}

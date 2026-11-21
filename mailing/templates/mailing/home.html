@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="h2 mb-1">Сервис управления рассылками</h1>
+    <p class="text-muted mb-0">Создавайте списки получателей, письма и рассылки, запускайте их и следите за статистикой.</p>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted mb-2">Всего рассылок</div>
+                <div class="stat-number">{{ stats.total_mailings }}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm h-100 border-success">
+            <div class="card-body">
+                <div class="text-muted mb-2">Активных рассылок</div>
+                <div class="stat-number text-success">{{ stats.active_mailings }}</div>
+                <div class="small text-muted mt-2">Статус «Запущена» и сейчас идёт период отправки</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <div class="text-muted mb-2">Уникальных получателей</div>
+                <div class="stat-number">{{ stats.unique_recipients }}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if user.is_authenticated %}
+    <div class="d-flex flex-wrap gap-2">
+        <a href="{% url 'mailing:mailing_create' %}" class="btn btn-primary">Создать рассылку</a>
+        <a href="{% url 'mailing:recipient_create' %}" class="btn btn-outline-primary">Добавить получателя</a>
+        <a href="{% url 'mailing:message_create' %}" class="btn btn-outline-primary">Написать сообщение</a>
+        <a href="{% url 'mailing:statistics' %}" class="btn btn-outline-secondary">Моя статистика</a>
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        Чтобы управлять рассылками, <a href="{% url 'users:login' %}">войдите</a> или
+        <a href="{% url 'users:register' %}">зарегистрируйтесь</a>.
+    </div>
+{% endif %}
+{% endblock %}

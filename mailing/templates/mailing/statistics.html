@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}Статистика{% endblock %}
+
+{% block content %}
+<h1 class="h3 mb-4">Статистика моих рассылок</h1>
+
+<div class="row g-4 mb-4">
+    <div class="col-sm-6 col-lg-3">
+        <div class="card shadow-sm h-100"><div class="card-body">
+            <div class="text-muted mb-2">Всего попыток</div>
+            <div class="stat-number">{{ stats.total_attempts }}</div>
+        </div></div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card shadow-sm h-100"><div class="card-body">
+            <div class="text-muted mb-2">Успешных</div>
+            <div class="stat-number text-success">{{ stats.success_attempts }}</div>
+        </div></div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card shadow-sm h-100"><div class="card-body">
+            <div class="text-muted mb-2">Неуспешных</div>
+            <div class="stat-number text-danger">{{ stats.failure_attempts }}</div>
+        </div></div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <div class="card shadow-sm h-100"><div class="card-body">
+            <div class="text-muted mb-2">Отправлено писем</div>
+            <div class="stat-number">{{ stats.messages_sent }}</div>
+        </div></div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-white fw-semibold">По рассылкам</div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr><th>№</th><th>Тема письма</th><th>Статус</th><th class="text-end">Успешно</th><th class="text-end">Не успешно</th></tr>
+            </thead>
+            <tbody>
+                {% for row in stats.mailings %}
+                    <tr>
+                        <td><a href="{% url 'mailing:mailing_detail' row.pk %}">{{ row.pk }}</a></td>
+                        <td>{{ row.subject }}</td>
+                        <td>{{ row.status }}</td>
+                        <td class="text-end text-success">{{ row.success }}</td>
+                        <td class="text-end text-danger">{{ row.failure }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="5" class="text-muted">У вас пока нет рассылок.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<p class="text-muted small mt-2">Данные обновляются раз в минуту и сразу после запуска рассылки.</p>
+{% endblock %}

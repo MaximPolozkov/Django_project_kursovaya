@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}{{ mail_message.subject }}{% endblock %}
+
+{% block content %}
+<a href="{% url 'mailing:message_list' %}" class="btn btn-link px-0 mb-3">← Все сообщения</a>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <div class="text-muted small mb-1">Тема письма</div>
+        <h1 class="h3 mb-4">{{ mail_message.subject }}</h1>
+        <div class="text-muted small mb-1">Тело письма</div>
+        <div class="border rounded p-3 bg-light">{{ mail_message.body|linebreaks }}</div>
+    </div>
+    <div class="card-footer bg-white d-flex gap-2">
+        <a href="{% url 'mailing:message_update' mail_message.pk %}" class="btn btn-outline-secondary btn-sm">Редактировать</a>
+        <a href="{% url 'mailing:message_delete' mail_message.pk %}" class="btn btn-outline-danger btn-sm">Удалить</a>
+    </div>
+</div>
+{% endblock %}
