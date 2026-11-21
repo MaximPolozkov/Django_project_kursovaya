@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}{{ recipient.full_name }}{% endblock %}
+
+{% block content %}
+<a href="{% url 'mailing:recipient_list' %}" class="btn btn-link px-0 mb-3">← Все получатели</a>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h1 class="h3">{{ recipient.full_name }}</h1>
+        <p class="mb-1"><strong>Email:</strong> {{ recipient.email }}</p>
+        <p class="mb-1"><strong>Комментарий:</strong> {{ recipient.comment|default:"—"|linebreaksbr }}</p>
+        <p class="text-muted small mb-0">Владелец: {{ recipient.owner.email }}</p>
+    </div>
+    {% if recipient.owner_id == user.pk %}
+        <div class="card-footer bg-white d-flex gap-2">
+            <a href="{% url 'mailing:recipient_update' recipient.pk %}" class="btn btn-outline-secondary btn-sm">Редактировать</a>
+            <a href="{% url 'mailing:recipient_delete' recipient.pk %}" class="btn btn-outline-danger btn-sm">Удалить</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

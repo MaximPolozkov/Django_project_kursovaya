@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Сообщения{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Сообщения</h1>
+    <a href="{% url 'mailing:message_create' %}" class="btn btn-primary">Написать сообщение</a>
+</div>
+
+<div class="list-group shadow-sm">
+    {% for mail_message in mail_messages %}
+        <a href="{% url 'mailing:message_detail' mail_message.pk %}" class="list-group-item list-group-item-action">
+            <div class="fw-semibold">{{ mail_message.subject }}</div>
+            <div class="text-muted small">{{ mail_message.body|truncatechars:120 }}</div>
+        </a>
+    {% empty %}
+        <div class="list-group-item text-muted">Сообщений пока нет.</div>
+    {% endfor %}
+</div>
+
+{% include "includes/pagination.html" %}
+{% endblock %}

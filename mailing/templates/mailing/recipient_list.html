@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Получатели{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">Получатели{% if perms.mailing.can_view_all_recipients %} <small class="text-muted fs-6">(все пользователи)</small>{% endif %}</h1>
+    <a href="{% url 'mailing:recipient_create' %}" class="btn btn-primary">Добавить получателя</a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Ф. И. О.</th><th>Email</th><th>Комментарий</th>
+                    {% if perms.mailing.can_view_all_recipients %}<th>Владелец</th>{% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for recipient in recipients %}
+                    <tr>
+                        <td><a href="{% url 'mailing:recipient_detail' recipient.pk %}">{{ recipient.full_name }}</a></td>
+                        <td>{{ recipient.email }}</td>
+                        <td class="text-muted">{{ recipient.comment|truncatechars:60|default:"—" }}</td>
+                        {% if perms.mailing.can_view_all_recipients %}<td>{{ recipient.owner.email }}</td>{% endif %}
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4" class="text-muted">Получателей пока нет.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% include "includes/pagination.html" %}
+{% endblock %}
